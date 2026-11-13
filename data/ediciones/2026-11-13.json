@@ -6,61 +6,141 @@
   "titular": "Hoy es **viernes 13**, y en 1960 una revista científica dijo que hoy se acababa el mundo (spoiler: no). El Madrid llega al parón como **colíder**, falta muy poco para **GTA VI** y Anthropic se prepara para debutar en Wall Street.",
   "notificacion": "☀️ Viernes 13: el día que la ciencia predijo el fin del mundo · ⚪ Madrid colíder tras golear en Mestalla · 🎮 GTA VI a 6 días",
   "indicadores": [
-    { "id": "trm", "label": "Dólar TRM", "color": "#a3e635", "valor": "$3.269,88", "detalle": "▲ 0,99 % · máximo en más de un mes (10 nov)" },
-    { "label": "Inflación 2026", "color": "#f472b6", "valor": "7,1 %", "detalle": "Proyección del Banco de la República" },
-    { "label": "PIB 2026", "color": "#22d3ee", "valor": "2,0 %", "detalle": "Crecimiento esperado por el Banrep" },
-    { "label": "GTA VI", "color": "#8b5cf6", "countdown": "2026-11-19T00:00:00-05:00", "detalle": "Llega el 19 de noviembre" }
+    {
+      "id": "trm",
+      "label": "Dólar TRM",
+      "color": "#a3e635",
+      "valor": "$3.269,88",
+      "detalle": "▲ 0,99 % · máximo en más de un mes (10 nov)"
+    },
+    {
+      "label": "Inflación 2026",
+      "color": "#f472b6",
+      "valor": "7,1 %",
+      "detalle": "Proyección del Banco de la República"
+    },
+    {
+      "label": "PIB 2026",
+      "color": "#22d3ee",
+      "valor": "2,0 %",
+      "detalle": "Crecimiento esperado por el Banrep"
+    },
+    {
+      "label": "GTA VI",
+      "color": "#8b5cf6",
+      "countdown": "2026-11-19T00:00:00-05:00",
+      "detalle": "Llega el 19 de noviembre"
+    }
   ],
   "madrid": {
     "etiqueta": "Real Madrid · Último partido",
     "competicion": "LaLiga · Jornada 12",
     "lugar": "en Mestalla",
-    "local": "Valencia", "goles_local": 0,
-    "visitante": "Real Madrid", "goles_visitante": 3,
+    "local": "Valencia",
+    "goles_local": 0,
+    "visitante": "Real Madrid",
+    "goles_visitante": 3,
     "madrid_es": "visitante",
     "resumen": "Goles de **Valverde, Arda Güler y Mbappé**. Güler fue la figura: un gol y una asistencia. Con Mourinho el equipo suma **ocho victorias seguidas** y llega al parón de selecciones **empatado con el Barcelona en 30 puntos**. Mbappé quedó en la historia como autor del último gol blanco en el viejo Mestalla, que será demolido.",
-    "chips": ["8 triunfos seguidos", "Colíder · 30 pts", "Figura: Arda Güler"],
-    "proximo": { "fecha": "2026-11-22T00:00:00-05:00", "texto": "Próximo: Real Madrid vs Celta (22 nov, LaLiga) y luego vs PSV en Champions (24 nov)." }
+    "chips": [
+      "8 triunfos seguidos",
+      "Colíder · 30 pts",
+      "Figura: Arda Güler"
+    ],
+    "proximo": {
+      "fecha": "2026-11-22T00:00:00-05:00",
+      "texto": "Próximo: Real Madrid vs Celta (22 nov, LaLiga) y luego vs PSV en Champions (24 nov)."
+    }
   },
   "noticias": [
-    { "tema": "Tecnología · Negocios", "color": "#22d3ee", "titulo": "Anthropic, la creadora de Claude, va a Wall Street",
+    {
+      "tema": "Tecnología · Negocios",
+      "color": "#22d3ee",
+      "titulo": "Anthropic, la creadora de Claude, va a Wall Street",
       "texto": "Presentó su solicitud para cotizar en el Nasdaq con el símbolo **ANT**. Según The Wall Street Journal, podría empezar a cotizar la semana del 16 de noviembre. Goldman Sachs y Morgan Stanley lideran la operación.",
-      "fuente": "El CEO", "url": "https://elceo.com/mercados/anthropic-solicitud-debut-wall-street-cotizar-nasdaq-noviembre/" },
-    { "tema": "Tecnología", "color": "#8b5cf6", "titulo": "Una compra de 115.000 millones de dólares en chips",
+      "fuente": "El CEO",
+      "url": "https://elceo.com/mercados/anthropic-solicitud-debut-wall-street-cotizar-nasdaq-noviembre/"
+    },
+    {
+      "tema": "Tecnología",
+      "color": "#8b5cf6",
+      "titulo": "Una compra de 115.000 millones de dólares en chips",
       "texto": "Marvell Technology anunció la compra de Lumentum, fabricante de componentes ópticos que mueven datos en los centros de IA. Es una de las operaciones más grandes del año en el sector.",
-      "fuente": "ENTER.CO", "url": "https://www.enter.co/page/2/?outputType=amp" },
-    { "tema": "Economía Colombia", "color": "#a3e635", "titulo": "El Banrep sube su proyección de inflación a 7,1 %",
+      "fuente": "ENTER.CO",
+      "url": "https://www.enter.co/page/2/?outputType=amp"
+    },
+    {
+      "tema": "Economía Colombia",
+      "color": "#a3e635",
+      "titulo": "El Banrep sube su proyección de inflación a 7,1 %",
       "texto": "En su informe trimestral, el equipo técnico del Banco de la República pasó del 6,9 % al 7,1 % para 2026 y espera que la economía crezca 2,0 %. Bancolombia estima crecimiento del 2,2 % entre agosto y octubre.",
-      "fuente": "La Nota Económica", "url": "https://lanotaeconomica.com.co/?p=60655" },
-    { "tema": "Economía Colombia", "color": "#fbbf24", "titulo": "El dólar repunta y toca su nivel más alto en un mes",
+      "fuente": "La Nota Económica",
+      "url": "https://lanotaeconomica.com.co/?p=60655"
+    },
+    {
+      "tema": "Economía Colombia",
+      "color": "#fbbf24",
+      "titulo": "El dólar repunta y toca su nivel más alto en un mes",
       "texto": "La TRM subió 32 pesos el 10 de noviembre, hasta $3.269,88. Aun así, en lo que va de 2026 el dólar ha caído cerca de un 14 %. Bancolombia espera que se mueva entre $3.120 y $3.300 este mes.",
-      "fuente": "Dólar Colombia", "url": "https://www.dolar-colombia.com/2026-11-10" },
-    { "tema": "Música", "color": "#f472b6", "titulo": "Anoche fue la gran noche de los Latin Grammy",
+      "fuente": "Dólar Colombia",
+      "url": "https://www.dolar-colombia.com/2026-11-10"
+    },
+    {
+      "tema": "Música",
+      "color": "#f472b6",
+      "titulo": "Anoche fue la gran noche de los Latin Grammy",
       "texto": "La edición 27 se entregó en el MGM Grand de Las Vegas. Llegaban como favoritos Edgar Barrera (10 nominaciones) y Karol G, Rosalía y Jorge Drexler (7 cada uno). Daddy Yankee fue homenajeado como Persona del Año.",
-      "fuente": "Extra", "url": "https://www.extra.ec/noticia/farandula/latin-grammy-2026-quienes-actuaran-ver-ceremonia-ecuador-165416.html" },
-    { "tema": "Videojuegos", "color": "#f9a8d4", "titulo": "GTA VI: cuenta regresiva final",
+      "fuente": "Extra",
+      "url": "https://www.extra.ec/noticia/farandula/latin-grammy-2026-quienes-actuaran-ver-ceremonia-ecuador-165416.html"
+    },
+    {
+      "tema": "Videojuegos",
+      "color": "#f9a8d4",
+      "titulo": "GTA VI: cuenta regresiva final",
       "texto": "Take-Two confirmó el 19 de noviembre para PS5 y Xbox Series X|S. En PC todavía no tiene fecha. El CEO de Take-Two bromeó con que mucha gente se va a \"reportar enferma\" ese día.",
       "countdown": "2026-11-19T00:00:00-05:00",
-      "fuente": "Digital Trends", "url": "https://es.digitaltrends.com/videojuego/gta-6-llegara-el-19-de-noviembre-el-dia-que-varios-se-reportaran-enfermos/" },
-    { "tema": "Ciencia", "color": "#22d3ee", "titulo": "Un superconductor estudiado 40 años escondía un secreto",
+      "fuente": "Digital Trends",
+      "url": "https://es.digitaltrends.com/videojuego/gta-6-llegara-el-19-de-noviembre-el-dia-que-varios-se-reportaran-enfermos/"
+    },
+    {
+      "tema": "Ciencia",
+      "color": "#22d3ee",
+      "titulo": "Un superconductor estudiado 40 años escondía un secreto",
       "texto": "Con imágenes 3D avanzadas, científicos descubrieron que un material superconductor conocido desde hace décadas es mucho más complejo de lo que se creía: tiene un mosaico oculto de distintas estructuras cristalinas.",
-      "fuente": "ScienceDaily", "url": "https://www.sciencedaily.com/?channel=Science" },
-    { "tema": "Ingeniería industrial", "color": "#a3e635", "titulo": "Gemelos digitales para camiones refrigerados",
+      "fuente": "ScienceDaily",
+      "url": "https://www.sciencedaily.com/?channel=Science"
+    },
+    {
+      "tema": "Ingeniería industrial",
+      "color": "#a3e635",
+      "titulo": "Gemelos digitales para camiones refrigerados",
       "texto": "El laboratorio suizo Empa trabaja en \"gemelos digitales\": copias virtuales de cada camión que simulan la temperatura de la carga en tiempo real para reducir pérdidas en la cadena de frío. Logística, calidad e Industria 4.0 en un solo proyecto.",
-      "fuente": "Newswise", "url": "https://www.newswise.com/articles/view/811155/?sc=sphr&xy=10054439" }
+      "fuente": "Newswise",
+      "url": "https://www.newswise.com/articles/view/811155/?sc=sphr&xy=10054439"
+    }
   ],
   "dato": {
     "frase": "En 1960 la revista *Science* publicó un artículo titulado “Juicio Final: *viernes 13 de noviembre de 2026*”. Es decir: hoy.",
     "texto": "El autor, Heinz von Foerster, calculó que si la población seguía creciendo como entonces, se volvería “infinita” justo en esta fecha. No era una profecía: era una advertencia matemática sobre el crecimiento exponencial. Feliz viernes 13.",
-    "fuente": "Phys.org", "url": "https://phys.org/science-news/sci-other/"
+    "fuente": "Phys.org",
+    "url": "https://phys.org/science-news/sci-other/"
   },
   "concepto": {
     "nombre": "Ley de Little",
     "formula": "L = λ · W",
     "variables": [
-      { "simbolo": "L", "significado": "Unidades dentro del sistema (inventario en proceso)" },
-      { "simbolo": "λ", "significado": "Ritmo al que entran (unidades por hora)" },
-      { "simbolo": "W", "significado": "Tiempo que pasa cada una adentro" }
+      {
+        "simbolo": "L",
+        "significado": "Unidades dentro del sistema (inventario en proceso)"
+      },
+      {
+        "simbolo": "λ",
+        "significado": "Ritmo al que entran (unidades por hora)"
+      },
+      {
+        "simbolo": "W",
+        "significado": "Tiempo que pasa cada una adentro"
+      }
     ],
     "ejemplo": "Si a una línea entran **20 piezas por hora** y cada una tarda **3 horas** en salir, siempre habrá unas **60 piezas** en proceso. ¿Quieres menos inventario? Baja el tiempo de ciclo. Funciona igual para la fila de un banco o los carros en un peaje."
   },
@@ -70,5 +150,62 @@
     "autor": "Eliyahu M. Goldratt",
     "titulo": "La novela que enseña ingeniería industrial sin parecer una clase",
     "texto": "Un gerente tiene 90 días para salvar su fábrica. Con esa historia, Goldratt explica la **Teoría de Restricciones**, los cuellos de botella y por qué una planta \"ocupada\" no siempre es productiva. Se lee como una serie y es lectura clásica en muchas carreras de ingeniería industrial."
-  }
+  },
+  "quiz": [
+    {
+      "pregunta": "¿Con qué símbolo planea cotizar Anthropic en el Nasdaq?",
+      "opciones": [
+        "CLDE",
+        "ANT",
+        "ANTH",
+        "AIQ"
+      ],
+      "correcta": 1,
+      "explicacion": "Anthropic presentó su solicitud para cotizar como ANT."
+    },
+    {
+      "pregunta": "¿Quién marcó el último gol del Real Madrid en el viejo Mestalla?",
+      "opciones": [
+        "Vinícius Jr.",
+        "Bellingham",
+        "Mbappé",
+        "Valverde"
+      ],
+      "correcta": 2,
+      "explicacion": "Mbappé cerró el 0-3 y quedó como autor del último gol blanco en Mestalla."
+    },
+    {
+      "pregunta": "¿Cuánto proyecta el Banco de la República que cerrará la inflación de 2026?",
+      "opciones": [
+        "5,2 %",
+        "6,9 %",
+        "7,1 %",
+        "8,3 %"
+      ],
+      "correcta": 2,
+      "explicacion": "El equipo técnico del Banrep la subió de 6,9 % a 7,1 %."
+    },
+    {
+      "pregunta": "¿Qué día sale GTA VI en PS5 y Xbox?",
+      "opciones": [
+        "13 de noviembre",
+        "19 de noviembre",
+        "26 de mayo",
+        "1 de diciembre"
+      ],
+      "correcta": 1,
+      "explicacion": "Take-Two confirmó el 19 de noviembre de 2026."
+    },
+    {
+      "pregunta": "Ley de Little: si entran 20 piezas por hora y cada una tarda 3 horas, ¿cuántas hay en proceso?",
+      "opciones": [
+        "23",
+        "6,7",
+        "60",
+        "17"
+      ],
+      "correcta": 2,
+      "explicacion": "L = λ · W = 20 × 3 = 60 piezas."
+    }
+  ]
 }

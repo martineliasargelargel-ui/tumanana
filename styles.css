@@ -152,7 +152,46 @@ footer b{color:var(--soft);font-weight:500}
 .muted{color:var(--dim);margin-top:12px;font-size:14px}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#f4f2ff;color:#07080f;font-weight:600;padding:12px 18px;border-radius:14px;box-shadow:0 20px 40px -10px rgba(0,0,0,.6);animation:up .3s}
 
+/* Racha */
+.streak{color:var(--amber);border-color:rgba(251,191,36,.35);letter-spacing:.04em}
+.streak-big{display:flex;align-items:baseline;gap:14px;margin:6px 0 4px}
+.streak-big b{font-family:"Instrument Serif",serif;font-weight:400;font-size:96px;line-height:1;background:linear-gradient(180deg,#fde68a,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.streak-big span{color:var(--soft);line-height:1.4}
+.medals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.medal{text-align:center;padding:14px 8px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);font-size:12px;color:var(--dim);line-height:1.4}
+.medal i{display:block;font-style:normal;font-size:34px;filter:grayscale(1) opacity(.35);margin-bottom:6px}
+.medal.on{color:var(--ink);border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.08)}
+.medal.on i{filter:none}
+
+/* Quiz */
+.quiz{padding:26px;background:radial-gradient(120% 140% at 0% 0%,rgba(139,92,246,.25),transparent 55%),linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.02))}
+.quiz .q{font-size:22px;font-weight:600;line-height:1.35;margin:14px 0 16px}
+.quiz .progress{display:flex;gap:6px;margin-top:12px}
+.quiz .progress i{flex:1;height:5px;border-radius:5px;background:rgba(255,255,255,.1)}
+.quiz .progress i.ok{background:var(--lime)}.quiz .progress i.ko{background:#fb7185}.quiz .progress i.cur{background:var(--violet)}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;padding:15px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.22);font-size:16px;transition:.2s}
+.opt:hover:not([disabled]){border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.06)}
+.opt:active:not([disabled]){transform:scale(.98)}
+.opt.ok{border-color:var(--lime);background:rgba(163,230,53,.14)}
+.opt.ko{border-color:#fb7185;background:rgba(251,113,133,.14)}
+.opt[disabled]{cursor:default}
+.explain{margin-top:14px;color:var(--soft);font-size:14px;line-height:1.5}
+.explain b{color:var(--ink)}
+.quiz .next-btn{margin-top:16px}
+.result{text-align:center}
+.result .score{font-family:"Instrument Serif",serif;font-size:88px;line-height:1;margin:10px 0 4px}
+.result .grid5{font-size:30px;letter-spacing:4px;margin:10px 0}
+.result p{color:var(--soft);line-height:1.5}
+.result .row{justify-content:center}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+a.cta{text-decoration:none;display:inline-block}
+.sharecard{margin-left:12px;font-size:12px;color:var(--soft);border:1px solid var(--line);border-radius:999px;padding:4px 10px;vertical-align:middle}
+.sharecard:hover{color:var(--ink);border-color:rgba(255,255,255,.3)}
+.card-preview{display:block;width:100%;max-width:360px;margin:0 auto;border-radius:16px;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+
 @media (max-width:720px){
+  .hide-sm{display:none}
   .weather{grid-template-columns:1fr}
   .wicon{max-width:120px;position:absolute;right:12px;top:34px}
   #weatherCard .label{padding-right:0;max-width:100%}

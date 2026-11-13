@@ -29,8 +29,9 @@
   <div class="top">
     <span class="pill"><span class="live"></span><span id="edNum">Cargando…</span></span>
     <span class="actions">
+      <button class="pill btn streak" id="btnStreak" aria-label="Tu racha">🔥 <span id="streakNum">1</span></button>
       <button class="pill btn" id="btnArchive" aria-label="Ediciones anteriores">🗂️</button>
-      <button class="pill btn" id="btnShare" aria-label="Compartir">↗ Compartir</button>
+      <button class="pill btn" id="btnShare" aria-label="Compartir la app">↗<span class="hide-sm"> Compartir</span></button>
     </span>
   </div>
 
@@ -71,6 +72,9 @@
   <h2 class="sec">Lo que <em>importa hoy</em></h2>
   <section class="grid" id="noticias"></section>
 
+  <h2 class="sec" id="quizTitle" hidden>Quiz <em>del día</em></h2>
+  <section class="card quiz" id="quiz" hidden></section>
+
   <h2 class="sec">Para <em>pensar</em></h2>
   <section class="grid" id="pensar"></section>
 
@@ -104,6 +108,32 @@
       <li>Elige <b>“Agregar a inicio”</b> y toca <b>Agregar</b>.</li>
     </ol>
     <p class="muted">Listo: “Tu Mañana” queda como una app en tu pantalla.</p>
+  </div>
+</div>
+
+<!-- Hoja: racha -->
+<div class="sheet" id="sheetStreak" hidden>
+  <div class="sheet-body">
+    <button class="close" data-close aria-label="Cerrar">✕</button>
+    <h3>Tu racha 🔥</h3>
+    <div class="streak-big"><b id="streakBig">1</b><span>días seguidos leyendo Tu Mañana</span></div>
+    <p class="muted" id="streakBest"></p>
+    <div class="medals" id="medals"></div>
+    <p class="muted">Abre la app cada día para no perder tu racha. Si pasa un día sin entrar, vuelve a empezar.</p>
+  </div>
+</div>
+
+<!-- Hoja: tarjeta para compartir -->
+<div class="sheet" id="sheetCard" hidden>
+  <div class="sheet-body">
+    <button class="close" data-close aria-label="Cerrar">✕</button>
+    <h3>Tu tarjeta</h3>
+    <img id="cardImg" alt="Tarjeta para compartir" class="card-preview">
+    <div class="row">
+      <a class="cta" id="cardDownload" download="tu-manana.png">⬇ Descargar</a>
+      <button class="pill btn" id="cardShare">↗ Compartir</button>
+    </div>
+    <p class="muted">En el celular también puedes dejar el dedo presionado sobre la imagen para guardarla.</p>
   </div>
 </div>
 

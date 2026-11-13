@@ -1,5 +1,5 @@
 /* Tu Mañana · service worker */
-const VERSION = 'tm-v1';
+const VERSION = 'tm-v2';
 const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {

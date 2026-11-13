@@ -71,14 +71,15 @@
     } else $('#madrid').hidden = true;
 
     // Noticias
-    $('#noticias').innerHTML = (ed.noticias || []).map((n) => `
+    $('#noticias').innerHTML = (ed.noticias || []).map((n, i) => `
       <article class="card news" style="--accent:${esc(n.color)}">
         <div class="label"><span class="dot" style="background:${esc(n.color)}"></span>${esc(n.tema)}</div>
         <h3>${esc(n.titulo)}</h3>
         <p>${md(n.texto)}</p>
         ${n.countdown ? `<div class="cdown" data-cd="${esc(n.countdown)}" data-cd-mode="full"><div><b>0</b><small>días</small></div><div><b>00</b><small>horas</small></div><div><b>00</b><small>min</small></div><div><b>00</b><small>seg</small></div></div>` : ''}
-        ${n.url ? `<a class="src" href="${safeUrl(n.url)}" target="_blank" rel="noopener">${esc(n.fuente || 'Fuente')} ↗</a>` : ''}
+        ${n.url ? `<a class="src" href="${safeUrl(n.url)}" target="_blank" rel="noopener">${esc(n.fuente || 'Fuente')} ↗</a>` : ''}<button class="sharecard" data-card="${i}">📸 Tarjeta</button>
       </article>`).join('');
+    document.querySelectorAll('[data-card]').forEach((b) => b.addEventListener('click', () => makeCard(ed, ed.noticias[+b.dataset.card])));
 
     // Para pensar
     const d = ed.dato, c = ed.concepto;
@@ -108,6 +109,7 @@
         </div>
       </div>`;
 
+    renderQuiz(ed);
     reveal();
     tickCountdowns();
   }
@@ -275,6 +277,159 @@
   // ---------- service worker (offline + actualizaciones) ----------
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+
+  // ---------- RACHA DIARIA ----------
+  const dayKey = (d = new Date()) => d.toLocaleDateString('en-CA'); // AAAA-MM-DD local
+  const MEDALS = [
+    { n: 3, icon: '🌱', name: 'Constante' },
+    { n: 7, icon: '🥉', name: 'Una semana' },
+    { n: 15, icon: '🥈', name: 'Quincena' },
+    { n: 30, icon: '🥇', name: 'Un mes' },
+    { n: 100, icon: '💎', name: '100 días' },
+    { n: 365, icon: '👑', name: 'Un año' }
+  ];
+  function updateStreak() {
+    const today = dayKey();
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    const st = store.get('racha') || { last: null, count: 0, best: 0 };
+    if (st.last !== today) {
+      st.count = st.last === dayKey(y) ? st.count + 1 : 1;
+      st.last = today;
+      st.best = Math.max(st.best || 0, st.count);
+      store.set('racha', st);
+      const m = MEDALS.find((x) => x.n === st.count);
+      if (m) setTimeout(() => toast(`${m.icon} ¡Nueva medalla: ${m.name}! ${st.count} días seguidos`), 1200);
+      else if (st.count > 1) setTimeout(() => toast(`🔥 ¡${st.count} días seguidos!`), 1200);
+    }
+    $('#streakNum').textContent = st.count;
+    return st;
+  }
+  const streak = updateStreak();
+  $('#btnStreak').addEventListener('click', () => {
+    const st = store.get('racha') || streak;
+    $('#streakBig').textContent = st.count;
+    $('#streakBest').textContent = `Tu mejor racha: ${st.best} ${st.best === 1 ? 'día' : 'días'}`;
+    $('#medals').innerHTML = MEDALS.map((m) => `<div class="medal ${st.best >= m.n ? 'on' : ''}"><i>${m.icon}</i><b>${m.name}</b><br>${m.n} días</div>`).join('');
+    $('#sheetStreak').hidden = false;
+  });
+
+  // ---------- QUIZ DEL DÍA ----------
+  function renderQuiz(ed) {
+    const qs = ed.quiz || [];
+    const box = $('#quiz');
+    if (!qs.length) { box.hidden = true; $('#quizTitle').hidden = true; return; }
+    box.hidden = false; $('#quizTitle').hidden = false;
+    const key = 'quiz-' + ed.fecha;
+    const st = store.get(key) || { answers: [] };
+    const progress = (cur) => `<div class="progress">${qs.map((q, i) => `<i class="${i < st.answers.length ? (st.answers[i] === q.correcta ? 'ok' : 'ko') : i === cur ? 'cur' : ''}"></i>`).join('')}</div>`;
+
+    function intro() {
+      box.innerHTML = `<div class="label"><span class="dot" style="background:var(--violet)"></span>Quiz Nº ${esc(ed.edicion)} · ${qs.length} preguntas</div>
+        <p class="q">¿Leíste bien las noticias de hoy? Responde ${qs.length} preguntas y compara tu puntaje con tus amigos.</p>
+        <button class="cta" id="qStart">Empezar el quiz →</button>`;
+      $('#qStart').onclick = () => question(st.answers.length);
+    }
+    function question(i) {
+      if (i >= qs.length) return result();
+      const q = qs[i];
+      box.innerHTML = `<div class="label"><span class="dot" style="background:var(--violet)"></span>Pregunta ${i + 1} de ${qs.length}</div>
+        ${progress(i)}
+        <p class="q">${esc(q.pregunta)}</p>
+        <div class="opts">${q.opciones.map((o, k) => `<button class="opt" data-k="${k}">${esc(o)}</button>`).join('')}</div>
+        <div id="qAfter"></div>`;
+      box.querySelectorAll('.opt').forEach((b) => b.addEventListener('click', () => {
+        const k = +b.dataset.k;
+        st.answers[i] = k; store.set(key, st);
+        box.querySelectorAll('.opt').forEach((x) => { x.disabled = true; const kk = +x.dataset.k; if (kk === q.correcta) x.classList.add('ok'); else if (kk === k) x.classList.add('ko'); });
+        const ok = k === q.correcta;
+        if (navigator.vibrate) try { navigator.vibrate(ok ? 30 : [40, 60, 40]); } catch {}
+        $('#qAfter').innerHTML = `<p class="explain"><b>${ok ? '✅ ¡Correcto!' : '❌ Casi.'}</b> ${esc(q.explicacion || '')}</p>
+          <button class="cta next-btn">${i + 1 < qs.length ? 'Siguiente →' : 'Ver mi resultado 🏁'}</button>`;
+        box.querySelector('.next-btn').onclick = () => question(i + 1);
+        box.querySelector('.progress').outerHTML = progress(i);
+      }));
+    }
+    function result() {
+      const score = qs.reduce((a, q, i) => a + (st.answers[i] === q.correcta ? 1 : 0), 0);
+      const grid = qs.map((q, i) => (st.answers[i] === q.correcta ? '🟩' : '🟥')).join('');
+      const msg = score === qs.length ? '¡Perfecto! Eres la persona mejor informada del grupo 🏆' : score >= qs.length - 1 ? '¡Muy bien! Casi perfecto 👏' : score >= qs.length / 2 ? 'Nada mal. Mañana vas por el 5/5 💪' : 'Hoy no fue tu día. Lee las noticias y mañana te desquitas 😅';
+      const st2 = store.get('racha') || streak;
+      const url = location.origin + location.pathname;
+      const text = `☀️ Tu Mañana #${ed.edicion} · ${score}/${qs.length}\n${grid}\n🔥 Racha: ${st2.count} ${st2.count === 1 ? 'día' : 'días'}\n¿Me ganas? 👉 ${url}`;
+      box.innerHTML = `<div class="result">
+        <div class="label" style="justify-content:center"><span class="dot" style="background:var(--violet)"></span>Tu resultado de hoy</div>
+        <div class="score">${score}<span style="color:var(--dim)">/${qs.length}</span></div>
+        <div class="grid5">${grid}</div>
+        <p>${msg}</p>
+        <div class="row"><button class="cta" id="qShare">Compartir resultado</button><button class="pill btn" id="qWa">WhatsApp</button></div>
+        <p class="muted">Mañana hay quiz nuevo a las 7:00 a. m.</p></div>`;
+      $('#qShare').onclick = async () => {
+        try { if (navigator.share) await navigator.share({ text }); else { await navigator.clipboard.writeText(text); toast('📋 Resultado copiado: pégalo donde quieras'); } } catch {}
+      };
+      $('#qWa').onclick = () => { location.href = 'https://wa.me/?text=' + encodeURIComponent(text); };
+    }
+    if (st.answers.length >= qs.length) result(); else intro();
+  }
+
+  // ---------- TARJETAS PARA COMPARTIR ----------
+  function wrap(ctx, text, maxW) {
+    const words = text.split(/\s+/); const lines = []; let line = '';
+    for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+    if (line) lines.push(line); return lines;
+  }
+  async function makeCard(ed, n) {
+    if (!n) return;
+    toast('🎨 Creando tu tarjeta…');
+    try { await Promise.all([document.fonts.load('80px "Instrument Serif"'), document.fonts.load('600 40px "Space Grotesk"'), document.fonts.load('40px "Space Grotesk"')]); } catch {}
+    const W = 1080, H = 1350, P = 90;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const c = cv.getContext('2d');
+    c.fillStyle = '#07080f'; c.fillRect(0, 0, W, H);
+    const blob = (x, y, r, col) => { const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col); g.addColorStop(1, 'rgba(7,8,15,0)'); c.fillStyle = g; c.fillRect(0, 0, W, H); };
+    blob(120, 80, 700, 'rgba(109,40,217,.75)'); blob(1050, 620, 620, 'rgba(8,145,178,.6)'); blob(380, 1380, 600, 'rgba(219,39,119,.45)');
+    // marco de vidrio
+    c.fillStyle = 'rgba(255,255,255,.06)'; c.strokeStyle = 'rgba(255,255,255,.14)'; c.lineWidth = 2;
+    const rr = (x, y, w, h, r) => { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); };
+    rr(50, 200, W - 100, H - 380, 48); c.fill(); c.stroke();
+    c.fillStyle = n.color || '#8b5cf6'; c.fillRect(50 + 48, 200, W - 100 - 96, 5);
+    // cabecera
+    c.fillStyle = '#f4f2ff'; c.font = '600 34px "Space Grotesk", sans-serif'; c.fillText('☀️  TU MAÑANA', P, 120);
+    c.fillStyle = '#22d3ee'; c.font = '500 26px "Space Grotesk", sans-serif'; c.textAlign = 'right'; c.fillText((ed.fecha_texto || '').toUpperCase(), W - P, 120); c.textAlign = 'left';
+    // tema
+    let y = 300;
+    c.fillStyle = n.color || '#8b5cf6'; c.beginPath(); c.arc(P + 40, y - 10, 9, 0, 7); c.fill();
+    c.fillStyle = '#a9a6c4'; c.font = '500 26px "Space Grotesk", sans-serif'; c.fillText((n.tema || '').toUpperCase(), P + 62, y);
+    // título
+    c.fillStyle = '#f4f2ff'; c.font = '78px "Instrument Serif", Georgia, serif';
+    y += 100;
+    for (const l of wrap(c, n.titulo, W - 2 * P - 80).slice(0, 4)) { c.fillText(l, P + 40, y); y += 84; }
+    // texto
+    c.fillStyle = '#c9c6e0'; c.font = '36px "Space Grotesk", sans-serif'; y += 20;
+    const plain = String(n.texto || '').replace(/\*\*|\*/g, '');
+    const lines = wrap(c, plain, W - 2 * P - 80); const maxL = Math.max(3, Math.floor((H - 280 - y) / 52));
+    lines.slice(0, maxL).forEach((l, i, a) => { c.fillText(i === a.length - 1 && lines.length > maxL ? l.replace(/\s*\S*$/, ' …') : l, P + 40, y); y += 52; });
+    if (n.fuente) { c.fillStyle = '#6d6a8a'; c.font = '26px "Space Grotesk", sans-serif'; c.fillText('Fuente: ' + n.fuente, P + 40, H - 230); }
+    // pie
+    const url = (location.host + location.pathname).replace(/\/$/, '');
+    c.fillStyle = '#f4f2ff'; c.font = '600 30px "Space Grotesk", sans-serif'; c.fillText('Tu resumen diario, gratis cada mañana', P, H - 110);
+    c.fillStyle = '#a3e635'; c.font = '500 28px "Space Grotesk", sans-serif'; c.fillText(url, P, H - 66);
+    cv.toBlob(async (b) => {
+      if (!b) return toast('No se pudo crear la tarjeta');
+      const file = new File([b], 'tu-manana.png', { type: 'image/png' });
+      const shareText = `${n.titulo} — vía Tu Mañana ☀️ ${location.origin + location.pathname}`;
+      const objUrl = URL.createObjectURL(b);
+      $('#cardImg').src = objUrl; $('#cardDownload').href = objUrl;
+      $('#cardShare').onclick = async () => {
+        try {
+          if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: shareText });
+          else if (navigator.share) await navigator.share({ text: shareText });
+          else { await navigator.clipboard.writeText(shareText); toast('🔗 Texto copiado'); }
+        } catch {}
+      };
+      $('#sheetCard').hidden = false;
+    }, 'image/png');
   }
 
   // ---------- arranque ----------
