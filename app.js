@@ -172,7 +172,7 @@
   async function loadWeather(place) {
     $('#wPlace').textContent = `El clima en ${place.name}`;
     try {
-      const u = `https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code&timezone=auto&forecast_days=4`;
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}&current=temperature_2m,apparent_temperature,weather_code&hourly=temperature_2m,apparent_temperature,uv_index,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=4`;
       const w = await getJSON(u);
       const dd = w.daily;
       const max = Math.round(dd.temperature_2m_max[0]), min = Math.round(dd.temperature_2m_min[0]), p = dd.precipitation_probability_max[0] ?? 0;
@@ -182,6 +182,7 @@
       let tip = p >= 60 ? 'Lleva sombrilla ☂️' : p >= 30 ? 'Puede caer un aguacero, por si acaso.' : max >= 32 ? 'Mucho calor: hidrátate 💧' : 'Buen día para salir.';
       $('#wDesc').innerHTML = `Ahora · ${esc(desc)}. Máxima <b>${max}°</b> · mínima <b>${min}°</b> · <b>${p} % de lluvia</b>. ${tip}`;
       $('#wIcon').innerHTML = weatherSVG(kind, p >= 40);
+      renderHeat(w);
       $('#wForecast').innerHTML = [1, 2, 3].map((i) => {
         const dt = new Date(dd.time[i] + 'T12:00:00');
         const pp = dd.precipitation_probability_max[i] ?? 0;
@@ -191,6 +192,61 @@
       $('#wDesc').textContent = 'No se pudo cargar el clima ahora. Revisa tu conexión.';
       $('#wIcon').innerHTML = weatherSVG('partly', false);
     }
+  }
+
+
+  // ---------- calor por horas: pico, sensación térmica y UV ----------
+  const hora = (iso) => { const h = +iso.slice(11, 13); const ap = h < 12 ? 'a. m.' : 'p. m.'; const h12 = h % 12 || 12; return `${h12}:00 ${ap}`; };
+  const horaCorta = (iso) => { const h = +iso.slice(11, 13); return (h % 12 || 12) + (h < 12 ? 'a' : 'p'); };
+  function renderHeat(w) {
+    const box = $('#heat');
+    const H = w.hourly; if (!H || !H.time) { box.hidden = true; return; }
+    const today = w.daily.time[0];
+    const idx = H.time.map((t, i) => [t, i]).filter(([t]) => t.startsWith(today)).map(([, i]) => i);
+    if (!idx.length) { box.hidden = true; return; }
+    let iMax = idx[0], iFeel = idx[0];
+    idx.forEach((i) => { if (H.temperature_2m[i] > H.temperature_2m[iMax]) iMax = i; if (H.apparent_temperature[i] > H.apparent_temperature[iFeel]) iFeel = i; });
+    const tMax = Math.round(H.temperature_2m[iMax]), feel = Math.round(H.apparent_temperature[iFeel]);
+    const uv = Math.round(w.daily.uv_index_max?.[0] ?? 0);
+    // horas "de alerta": sensación térmica >= 35
+    const hot = idx.filter((i) => H.apparent_temperature[i] >= 35);
+    const hotTxt = hot.length ? `Evita el sol de <b>${hora(H.time[hot[0]])}</b> a <b>${hora(H.time[hot[hot.length - 1]]).replace(':00', ':59')}</b>.` : 'Hoy no se esperan horas de calor extremo.';
+    // mejor hora fresca para salir (6 a. m.–9 p. m., la de menor sensación térmica)
+    const day = idx.filter((i) => { const h = +H.time[i].slice(11, 13); return h >= 6 && h <= 21; });
+    let iCool = day[0]; day.forEach((i) => { if (H.apparent_temperature[i] < H.apparent_temperature[iCool]) iCool = i; });
+    const uvTxt = uv >= 11 ? 'extremo 🟣' : uv >= 8 ? 'muy alto 🔴' : uv >= 6 ? 'alto 🟠' : uv >= 3 ? 'moderado 🟡' : 'bajo 🟢';
+    const nivel = feel >= 41 ? ['🥵', 'Peligro por calor'] : feel >= 35 ? ['🔥', 'Calor intenso'] : feel >= 30 ? ['☀️', 'Día caluroso'] : ['😌', 'Temperatura agradable'];
+
+    // gráfica 5 a. m. – 10 p. m.
+    const pts = idx.filter((i) => { const h = +H.time[i].slice(11, 13); return h >= 5 && h <= 22; });
+    const vals = pts.map((i) => H.apparent_temperature[i]), tv = pts.map((i) => H.temperature_2m[i]);
+    const lo = Math.floor(Math.min(...tv, ...vals) - 1), hi = Math.ceil(Math.max(...tv, ...vals) + 1);
+    const Wd = 600, Ht = 150, px = (k) => 14 + (k * (Wd - 28)) / (pts.length - 1), py = (v) => 12 + (Ht - 40) * (1 - (v - lo) / (hi - lo || 1));
+    const path = (arr) => arr.map((v, k) => `${k ? 'L' : 'M'}${px(k).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+    const kMax = pts.indexOf(iMax), kNow = (() => { const nowH = new Date().getHours(); return pts.findIndex((i) => +H.time[i].slice(11, 13) === nowH); })();
+    const labels = pts.map((i, k) => (k % 3 === 0 ? `<text x="${px(k)}" y="${Ht - 4}" text-anchor="middle">${horaCorta(H.time[i])}</text>` : '')).join('');
+    const svg = `<svg viewBox="0 0 ${Wd} ${Ht}" class="heatchart" aria-label="Temperatura por horas">
+      <defs><linearGradient id="hg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f97316" stop-opacity=".45"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient>
+      <linearGradient id="hl" x1="0" x2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset=".6" stop-color="#f97316"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs>
+      <path d="${path(vals)} L${px(vals.length - 1)},${Ht - 22} L${px(0)},${Ht - 22} Z" fill="url(#hg)"/>
+      <path d="${path(vals)}" fill="none" stroke="url(#hl)" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="${path(tv)}" fill="none" stroke="rgba(244,242,255,.5)" stroke-width="2" stroke-dasharray="4 5"/>
+      ${kNow >= 0 ? `<line x1="${px(kNow)}" x2="${px(kNow)}" y1="8" y2="${Ht - 22}" stroke="rgba(163,230,53,.6)" stroke-dasharray="3 4"/><text x="${px(kNow)}" y="10" text-anchor="middle" class="now">ahora</text>` : ''}
+      ${kMax >= 0 ? `<circle cx="${px(kMax)}" cy="${py(tv[kMax])}" r="6" fill="#f4f2ff"/><text x="${px(kMax)}" y="${py(tv[kMax]) - 12}" text-anchor="middle" class="pk">${tMax}°</text>` : ''}
+      <g class="hx">${labels}</g></svg>`;
+
+    box.innerHTML = `
+      <div class="heat-head"><span class="heat-emoji">${nivel[0]}</span><div><div class="label" style="color:#fdba74">${nivel[1]} hoy</div>
+        <p class="heat-main">La máxima será de <b>${tMax}°C</b> a las <b>${hora(H.time[iMax])}</b></p></div></div>
+      <div class="heat-stats">
+        <div><small>Sensación térmica</small><b>${feel}°</b><span>a las ${hora(H.time[iFeel])}</span></div>
+        <div><small>Índice UV</small><b>${uv}</b><span>${uvTxt}</span></div>
+        <div><small>Más fresco</small><b class="sm">${hora(H.time[iCool]).replace(':00 ', ' ')}</b><span>${Math.round(H.apparent_temperature[iCool])}° de sensación</span></div>
+      </div>
+      ${svg}
+      <div class="heat-legend"><span><i style="background:linear-gradient(90deg,#fbbf24,#f472b6)"></i>Sensación térmica</span><span><i class="dash"></i>Temperatura</span></div>
+      <p class="heat-tip">${hotTxt} ${uv >= 8 ? 'Usa bloqueador y gorra. ' : ''}${feel >= 35 ? 'Toma agua seguido 💧' : ''}</p>`;
+    box.hidden = false;
   }
 
   async function placeName(lat, lon) {

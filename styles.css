@@ -73,6 +73,29 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 .bar{height:4px;border-radius:4px;background:rgba(255,255,255,.08);margin-top:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet))}
 
+/* Calor por horas */
+.heat{margin-top:18px;padding:18px;border-radius:20px;border:1px solid rgba(249,115,22,.3);background:linear-gradient(160deg,rgba(249,115,22,.14),rgba(244,114,182,.05))}
+.heat-head{display:flex;gap:14px;align-items:center}
+.heat-emoji{font-size:40px;line-height:1}
+.heat-main{font-size:18px;line-height:1.35;margin-top:6px}
+.heat-main b{color:#fdba74}
+.heat-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 10px}
+.heat-stats div{padding:10px;border-radius:14px;background:rgba(0,0,0,.22);border:1px solid var(--line)}
+.heat-stats small{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.heat-stats b{display:block;font-family:"Instrument Serif",serif;font-weight:400;font-size:30px;line-height:1.1;margin-top:4px}
+.heat-stats span{font-size:11px;color:var(--soft)}
+.heat-stats b.sm{font-size:22px;white-space:nowrap;padding-top:4px}
+@media (max-width:720px){.heat-stats b{font-size:26px}.heat{padding:14px}}
+.heatchart{width:100%;height:auto;display:block;margin-top:4px}
+.heatchart text{fill:var(--dim);font-size:13px;font-family:"Space Grotesk",sans-serif}
+.heatchart text.pk{fill:#f4f2ff;font-size:16px;font-weight:600}
+.heatchart text.now{fill:var(--lime);font-size:11px}
+.heat-legend{display:flex;gap:16px;font-size:11px;color:var(--dim);margin-top:4px}
+.heat-legend i{display:inline-block;width:18px;height:3px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.heat-legend i.dash{background:repeating-linear-gradient(90deg,rgba(244,242,255,.5) 0 4px,transparent 4px 8px)}
+.heat-tip{margin-top:10px;font-size:14px;color:var(--soft);line-height:1.5}
+.heat-tip b{color:var(--ink)}
+
 /* Ticker */
 .ticker{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
 .tick{padding:16px 18px;border-radius:20px}
