@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tu Mañana</title>
+<meta name="description" content="Tu Mañana: el resumen diario más bonito. Clima, fútbol, tecnología, economía, música, videojuegos, ciencia e ingeniería. Se renueva cada mañana a las 7:00.">
+<meta name="theme-color" content="#07080f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tu Mañana">
+<meta property="og:title" content="Tu Mañana · tu resumen diario">
+<meta property="og:description" content="Clima, fútbol, tecnología, economía, música, videojuegos y ciencia. Nuevo cada mañana a las 7:00.">
+<meta property="og:image" content="icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="grain" aria-hidden="true"></div>
+
+<main class="wrap" id="app">
+  <div class="top">
+    <span class="pill"><span class="live"></span><span id="edNum">Cargando…</span></span>
+    <span class="actions">
+      <button class="pill btn" id="btnArchive" aria-label="Ediciones anteriores">🗂️</button>
+      <button class="pill btn" id="btnShare" aria-label="Compartir">↗ Compartir</button>
+    </span>
+  </div>
+
+  <section class="hero">
+    <div class="kicker" id="fecha"></div>
+    <h1 id="saludo">Buenos<br><em>días.</em></h1>
+    <p id="titular"><span class="skeleton" style="width:90%"></span><span class="skeleton" style="width:70%"></span></p>
+  </section>
+
+  <!-- Banner instalar -->
+  <section class="install card in" id="installBanner" hidden>
+    <div>
+      <div class="label"><span class="dot" style="background:var(--lime)"></span>Instala la app</div>
+      <p>Tenla en tu pantalla de inicio como una app. Es gratis, ocupa casi nada y se actualiza sola cada mañana.</p>
+    </div>
+    <button class="cta" id="btnInstall">Instalar</button>
+    <button class="close" id="btnInstallClose" aria-label="Cerrar">✕</button>
+  </section>
+
+  <!-- CLIMA -->
+  <section class="card" id="weatherCard">
+    <div class="weather">
+      <div>
+        <div class="label"><span class="dot" style="background:var(--amber)"></span><span id="wPlace">El clima</span></div>
+        <div class="temp" id="wTemp">--<sup>°C</sup></div>
+        <div class="wdesc" id="wDesc">Consultando el clima…</div>
+        <button class="link" id="btnLocate">📍 Usar mi ubicación</button>
+      </div>
+      <div class="wicon" id="wIcon"></div>
+    </div>
+    <div class="forecast" id="wForecast"></div>
+  </section>
+
+  <section class="ticker" id="ticker"></section>
+
+  <section class="card madrid" id="madrid"></section>
+
+  <h2 class="sec">Lo que <em>importa hoy</em></h2>
+  <section class="grid" id="noticias"></section>
+
+  <h2 class="sec">Para <em>pensar</em></h2>
+  <section class="grid" id="pensar"></section>
+
+  <h2 class="sec">Recomendación <em>del día</em></h2>
+  <section class="card feature" id="reco"></section>
+
+  <footer>
+    <b>Tu Mañana</b> · hecho por Claude<br>
+    Se renueva todos los días a las 7:00 a. m.<br>
+    <span id="offline" hidden>📴 Sin conexión · mostrando la última edición guardada</span>
+  </footer>
+</main>
+
+<!-- Hoja: archivo -->
+<div class="sheet" id="sheetArchive" hidden>
+  <div class="sheet-body">
+    <button class="close" data-close aria-label="Cerrar">✕</button>
+    <h3>Ediciones anteriores</h3>
+    <div id="archiveList" class="archive"></div>
+  </div>
+</div>
+
+<!-- Hoja: instalar en iPhone -->
+<div class="sheet" id="sheetIOS" hidden>
+  <div class="sheet-body">
+    <button class="close" data-close aria-label="Cerrar">✕</button>
+    <h3>Instalar en iPhone</h3>
+    <ol class="steps">
+      <li>Abre esta página en <b>Safari</b>.</li>
+      <li>Toca el botón <b>Compartir</b> <span class="ios-share">⬆︎</span> abajo en la pantalla.</li>
+      <li>Elige <b>“Agregar a inicio”</b> y toca <b>Agregar</b>.</li>
+    </ol>
+    <p class="muted">Listo: “Tu Mañana” queda como una app en tu pantalla.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
