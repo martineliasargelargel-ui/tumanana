@@ -4,6 +4,15 @@
 
 👉 **Ábrela:** https://martineliasargelargel-ui.github.io/tumanana/
 
+## Lo que trae
+- ▶ **Modo Historias**: la edición en 30 segundos, a pantalla completa, estilo Instagram.
+- 🎧 **Escucha tu mañana**: la app te lee la edición en voz alta.
+- 🌅 **Cielo vivo**: el fondo cambia con la hora y el clima reales (amanecer, día, atardecer, noche con estrellas, lluvia animada) + amanecer, atardecer y fase de la luna.
+- 🌧️ **Lluvia minuto a minuto** para las próximas 2 horas y 🛰️ **radar de lluvia en vivo** (RainViewer).
+- 🔥 **Calor por horas**: hora de la máxima, sensación térmica, índice UV, hora más fresca y gráfica.
+- 🧠 **Quiz diario** estilo Wordle, 🔥 **racha** con medallas y 📸 **tarjetas** para compartir noticias.
+- 💵 Dólar TRM en vivo, 🗂️ archivo de ediciones, funciona sin internet.
+
 ## Cómo instalarla
 - **Android (Chrome):** abre el enlace y toca **Instalar**, o el menú ⋮ → *Instalar app*.
 - **iPhone (Safari):** botón **Compartir** → *Agregar a inicio*.

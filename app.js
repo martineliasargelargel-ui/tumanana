@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const $ = (s) => document.querySelector(s);
+  window.TM = window.TM || {};
   const DEFAULT_PLACE = { lat: 8.7848, lon: -75.7917, name: 'Cereté, Córdoba' };
   const store = {
     get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
@@ -13,7 +14,7 @@
   // **negrita** y *cursiva* (después de escapar)
   const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<em>$1</em>');
   const safeUrl = (u) => (/^https:\/\//i.test(u || '') ? esc(u) : '#');
-  const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2600); };
+  const toast = window.TM_toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2600); };
 
   // ---------- carga de la edición ----------
   const params = new URLSearchParams(location.search);
@@ -42,7 +43,9 @@
   function render(ed) {
     $('#edNum').textContent = `Edición Nº ${ed.edicion}`;
     $('#fecha').textContent = ed.fecha_texto || '';
-    if (ed.saludo) $('#saludo').innerHTML = ed.saludo.replace(/<(?!\/?(em|br)\b)[^>]*>/gi, '');
+    const hr = new Date().getHours();
+    const greet = hr >= 5 && hr < 12 ? 'Buenos <em>días.</em>' : hr >= 12 && hr < 19 ? 'Buenas <em>tardes.</em>' : 'Buenas <em>noches.</em>';
+    $('#saludo').innerHTML = !ed.saludo || /^Buenos <em>días\.<\/em>$/.test(ed.saludo) ? greet : ed.saludo.replace(/<(?!\/?(em|br)\b)[^>]*>/gi, '');
     $('#titular').innerHTML = md(ed.titular);
     document.title = `Tu Mañana · ${ed.fecha_texto || ''}`;
 
@@ -110,6 +113,8 @@
       </div>`;
 
     renderQuiz(ed);
+    window.TM.ed = ed;
+    document.dispatchEvent(new CustomEvent('tm:edition', { detail: ed }));
     reveal();
     tickCountdowns();
   }
@@ -172,7 +177,7 @@
   async function loadWeather(place) {
     $('#wPlace').textContent = `El clima en ${place.name}`;
     try {
-      const u = `https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}&current=temperature_2m,apparent_temperature,weather_code&hourly=temperature_2m,apparent_temperature,uv_index,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max&timezone=auto&forecast_days=4`;
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${place.lat}&longitude=${place.lon}&current=temperature_2m,apparent_temperature,weather_code,precipitation,is_day&minutely_15=precipitation&hourly=temperature_2m,apparent_temperature,uv_index,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weather_code,uv_index_max,sunrise,sunset&timezone=auto&forecast_days=4`;
       const w = await getJSON(u);
       const dd = w.daily;
       const max = Math.round(dd.temperature_2m_max[0]), min = Math.round(dd.temperature_2m_min[0]), p = dd.precipitation_probability_max[0] ?? 0;
@@ -182,7 +187,9 @@
       let tip = p >= 60 ? 'Lleva sombrilla ☂️' : p >= 30 ? 'Puede caer un aguacero, por si acaso.' : max >= 32 ? 'Mucho calor: hidrátate 💧' : 'Buen día para salir.';
       $('#wDesc').innerHTML = `Ahora · ${esc(desc)}. Máxima <b>${max}°</b> · mínima <b>${min}°</b> · <b>${p} % de lluvia</b>. ${tip}`;
       $('#wIcon').innerHTML = weatherSVG(kind, p >= 40);
-      renderHeat(w);
+      const heat = renderHeat(w);
+      window.TM.wx = { w, place, now, max, min, rain: p, desc, kind, heat };
+      document.dispatchEvent(new CustomEvent('tm:weather', { detail: window.TM.wx }));
       $('#wForecast').innerHTML = [1, 2, 3].map((i) => {
         const dt = new Date(dd.time[i] + 'T12:00:00');
         const pp = dd.precipitation_probability_max[i] ?? 0;
@@ -196,7 +203,7 @@
 
 
   // ---------- calor por horas: pico, sensación térmica y UV ----------
-  const hora = (iso) => { const h = +iso.slice(11, 13); const ap = h < 12 ? 'a. m.' : 'p. m.'; const h12 = h % 12 || 12; return `${h12}:00 ${ap}`; };
+  const hora = (iso) => { const h = +iso.slice(11, 13); const ap = h < 12 ? 'a.\u00a0m.' : 'p.\u00a0m.'; const h12 = h % 12 || 12; return `${h12}:00\u00a0${ap}`; };
   const horaCorta = (iso) => { const h = +iso.slice(11, 13); return (h % 12 || 12) + (h < 12 ? 'a' : 'p'); };
   function renderHeat(w) {
     const box = $('#heat');
@@ -241,12 +248,13 @@
       <div class="heat-stats">
         <div><small>Sensación térmica</small><b>${feel}°</b><span>a las ${hora(H.time[iFeel])}</span></div>
         <div><small>Índice UV</small><b>${uv}</b><span>${uvTxt}</span></div>
-        <div><small>Más fresco</small><b class="sm">${hora(H.time[iCool]).replace(':00 ', ' ')}</b><span>${Math.round(H.apparent_temperature[iCool])}° de sensación</span></div>
+        <div><small>Más fresco</small><b class="sm">${hora(H.time[iCool]).replace(':00\u00a0', '\u00a0')}</b><span>${Math.round(H.apparent_temperature[iCool])}° de sensación</span></div>
       </div>
       ${svg}
       <div class="heat-legend"><span><i style="background:linear-gradient(90deg,#fbbf24,#f472b6)"></i>Sensación térmica</span><span><i class="dash"></i>Temperatura</span></div>
       <p class="heat-tip">${hotTxt} ${uv >= 8 ? 'Usa bloqueador y gorra. ' : ''}${feel >= 35 ? 'Toma agua seguido 💧' : ''}</p>`;
     box.hidden = false;
+    return { tMax, horaMax: hora(H.time[iMax]), feel, horaFeel: hora(H.time[iFeel]), uv, uvTxt, cool: hora(H.time[iCool]), hotTxt: hotTxt.replace(/<[^>]+>/g, '') };
   }
 
   async function placeName(lat, lon) {

@@ -23,6 +23,7 @@
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="sky" id="sky" aria-hidden="true"><div class="stars" id="stars"></div><div class="drops" id="drops"></div></div>
 <div class="grain" aria-hidden="true"></div>
 
 <main class="wrap" id="app">
@@ -39,6 +40,10 @@
     <div class="kicker" id="fecha"></div>
     <h1 id="saludo">Buenos<br><em>días.</em></h1>
     <p id="titular"><span class="skeleton" style="width:90%"></span><span class="skeleton" style="width:70%"></span></p>
+    <div class="hero-actions">
+      <button class="cta big-cta" id="btnStories">▶ Ver en 30 segundos</button>
+      <button class="pill btn listen" id="btnListen">🎧 Escuchar</button>
+    </div>
   </section>
 
   <!-- Banner instalar -->
@@ -62,6 +67,8 @@
       </div>
       <div class="wicon" id="wIcon"></div>
     </div>
+    <div class="astro" id="astro" hidden></div>
+    <div class="nowcast" id="nowcast" hidden></div>
     <div class="heat" id="heat" hidden></div>
     <div class="forecast" id="wForecast"></div>
   </section>
@@ -138,8 +145,36 @@
   </div>
 </div>
 
+<!-- Hoja: radar -->
+<div class="sheet" id="sheetRadar" hidden>
+  <div class="sheet-body radar-body">
+    <button class="close" data-close aria-label="Cerrar">✕</button>
+    <h3>Radar de lluvia 🛰️</h3>
+    <div id="radarMap" class="radar-map"></div>
+    <div class="radar-ctrl"><button class="pill btn" id="radarPlay">⏸</button><span id="radarTime">Cargando…</span></div>
+    <p class="muted">Las manchas de colores son lluvia: azul suave es llovizna, amarillo y rojo es aguacero fuerte. Datos de RainViewer · mapa © OpenStreetMap © CARTO.</p>
+  </div>
+</div>
+
+<!-- Historias -->
+<div class="stories" id="stories" hidden>
+  <div class="st-bars" id="stBars"></div>
+  <button class="st-close" id="stClose" aria-label="Cerrar">✕</button>
+  <div class="st-stage" id="stStage"></div>
+  <div class="st-tap st-prev" id="stPrev"></div>
+  <div class="st-tap st-next" id="stNext"></div>
+</div>
+
+<!-- Reproductor de voz -->
+<div class="player" id="player" hidden>
+  <button class="pbtn" id="pPause" aria-label="Pausar">⏸</button>
+  <div class="pinfo"><small>🎧 Escuchando Tu Mañana</small><b id="pNow">…</b><div class="pbar"><i id="pBar"></i></div></div>
+  <button class="pbtn" id="pStop" aria-label="Detener">✕</button>
+</div>
+
 <div class="toast" id="toast" hidden></div>
 
 <script src="app.js" defer></script>
+<script src="extras.js" defer></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /* Tu Mañana · service worker */
-const VERSION = 'tm-v3';
-const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
+const VERSION = 'tm-v4';
+const SHELL = ['./', 'index.html', 'styles.css', 'app.js', 'extras.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
